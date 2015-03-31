@@ -1,0 +1,12 @@
+---
+- name: Create flannel config file to go in etcd
+  template: src=flannel-conf.json.j2 dest=/tmp/flannel-conf.json
+  when: inventory_hostname == groups['etcd'][0]
+
+- name: Load the flannel config file into etcd
+  shell: "cat /tmp/flannel-conf.json | /usr/bin/etcdctl --no-sync --peers={{ groups['etcd'][0] }}:2379 set /{{ cluster_name }}/network/config"
+  when: inventory_hostname == groups['etcd'][0]
+
+- name: Clean up the flannel config file
+  file: path=/tmp/flannel-config.json state=absent
+  when: inventory_hostname == groups['etcd'][0]

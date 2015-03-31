@@ -1,0 +1,6 @@
+---
+- include: config.yml
+  when: inventory_hostname == groups['etcd'][0]
+
+- include: client.yml
+  when: inventory_hostname in {{ groups['masters'] + groups['nodes'] }}
