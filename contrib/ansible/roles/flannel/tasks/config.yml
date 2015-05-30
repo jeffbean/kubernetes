@@ -1,10 +1,17 @@
 ---
+- name: Set facts about etcdctl command
+  set_fact:
+        peers: "{% for hostname in groups['etcd'] %}http://{{ hostname }}:2379{% if not loop.last %},{% endif %}{% endfor %}"
+        conf_file: "/tmp/flannel-conf.json"
+        conf_loc: "/{{ cluster_name }}/network/config"
+  when: inventory_hostname == groups['etcd'][0]
+
 - name: Create flannel config file to go in etcd
-  template: src=flannel-conf.json.j2 dest=/tmp/flannel-conf.json
+  template: src=flannel-conf.json.j2 dest={{ conf_file }}
   when: inventory_hostname == groups['etcd'][0]
 
 - name: Load the flannel config file into etcd
-  shell: "cat /tmp/flannel-conf.json | /usr/bin/etcdctl --no-sync --peers={{ groups['etcd'][0] }}:2379 set /{{ cluster_name }}/network/config"
+  shell: "/usr/bin/etcdctl --no-sync --peers={{ peers }} set {{ conf_loc }} < {{ conf_file }}"
   when: inventory_hostname == groups['etcd'][0]
 
 - name: Clean up the flannel config file
