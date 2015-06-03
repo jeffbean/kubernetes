@@ -17,3 +17,9 @@
 
 - name: restart iptables
   service: name=iptables state=restarted
+
+- name: remove certs
+  file: path={{ item }} state=absent
+  with_items:
+    - /srv/kubernetes/server.cert
+    - /srv/kubernetes/server.key
