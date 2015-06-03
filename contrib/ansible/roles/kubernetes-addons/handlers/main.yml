@@ -1,1 +1,3 @@
 ---
+- name: restart kube-addons
+  service: name=kube-addons state=restarted 

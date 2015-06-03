@@ -2,11 +2,14 @@
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
 
+- include: centos.yml
+  when: ansible_distribution == "CentOS"
+
 - name: Install kubernetes
-  yum: pkg=kubernetes state=latest enablerepo=virt7-testing
+  yum: pkg=kubernetes state=latest
   notify:
     - restart daemons
-  when: not is_atomic
+  when: not is_atomic and not ansible_distribution == "CentOS"
 
 - name: write the global config file
   template: src=config.j2 dest=/etc/kubernetes/config

@@ -8,11 +8,13 @@
   tags: addons
 
 - name: Install kube-addons service 
-  template: src=kube-addons.service dest=/usr/lib/systemd/system/kube-addons.service
+  template: src=kube-addons.service dest=/etc/systemd/system/kube-addons.service
   tags: addons
 
 - name: Install kube-addons.sh script for  the service. 
   template: src=kube-addons.sh dest=/etc/kubernetes/kube-addons.sh mode=0755
+  notify:
+    - restart kube-addons
   tags: addons
 
 - name: Enable and start kube addons

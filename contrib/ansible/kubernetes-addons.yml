@@ -2,5 +2,5 @@
 - hosts: masters
   sudo: yes
   roles:
-          - kubernetes-addons
+    - kubernetes-addons
 

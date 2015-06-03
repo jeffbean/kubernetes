@@ -7,11 +7,9 @@
 - hosts: masters
   sudo: yes
   roles:
-    - kubernetes
     - master
 
 - hosts: minions
   sudo: yes
   roles:
-    - kubernetes
     - minion
