@@ -5,20 +5,20 @@ ansible_ssh_user: root
 
 # password for the ansible_ssh_user. If this is unset you will need to set up
 # ssh keys so a password is not needed.
-ansible_ssh_pass: start123
+#ansible_ssh_pass: password
 
 # If a password is needed to sudo to root that password must be set here
-ansible_sudo_pass: start123
+#ansible_sudo_pass: password
 
 # A list of insecure registrys you night need to define
 insecure_registrys:
-  - "rdocker.mcp.com:5000"
+  - "rdocker.exapmle.com:5000"
 
 # If you need a proxy for the docker daemon define these here
 #  The condition is if they are defined so just comment them out if you don't 
 #  need a proxy.
-http_proxy: "http://rproxy.mcp.com:3128"
-https_proxy: "http://rproxy.mcp.com:3128"
+# http_proxy: "http://proxy.example.com:3128"
+# https_proxy: "http://proxy.example.com:3128"
 
 
 # Kubernetes internal network for services.
