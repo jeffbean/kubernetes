@@ -12,7 +12,7 @@ ansible_ssh_user: root
 
 # A list of insecure registrys you night need to define
 insecure_registrys:
-  - "rdocker.exapmle.com:5000"
+  - "rdocker.example.com:5000"
 
 # If you need a proxy for the docker daemon define these here
 #  The condition is if they are defined so just comment them out if you don't 

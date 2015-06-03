@@ -20,8 +20,17 @@
   notify:
     - restart scheduler
 
-- name: Run create cert ca script
-  script: make-cert.sh creates=/srv/kubernetes/server.cert 
+- name: Get create cert script from Kubernetes
+  get_url:
+    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-cert.sh
+    dest=/srv/kubernetes/make-cert.sh mode=0755 owner=root group=root
+- name: Get create cert script from Kubernetes
+  get_url:
+    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-ca-cert.sh
+    dest=/srv/kubernetes/make-ca-cert.sh mode=0755 owner=root group=root
+
+- name: Run create cert script
+  command: /srv/kubernetes/make-cert.sh creates=/srv/kubernetes/server.cert 
 
 - name: Change /srv/kubernetes directory owner to 'kube' user
   file: path=/srv/kubernetes owner=kube state=directory recurse=yes

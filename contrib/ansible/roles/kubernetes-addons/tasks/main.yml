@@ -9,6 +9,8 @@
 
 - name: Install kube-addons service 
   template: src=kube-addons.service dest=/etc/systemd/system/kube-addons.service
+  notify:
+    - reload and restart kube-addons
   tags: addons
 
 - name: Install kube-addons.sh script for  the service. 
