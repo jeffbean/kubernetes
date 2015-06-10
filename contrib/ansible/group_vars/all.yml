@@ -1,7 +1,7 @@
 # Account name of remote user. Ansible will use this user account to ssh into
 # the managed machines. The user must be able to use sudo without asking
 # for password unless ansible_sudo_pass is set
-ansible_ssh_user: root
+#ansible_ssh_user: root
 
 # password for the ansible_ssh_user. If this is unset you will need to set up
 # ssh keys so a password is not needed.
@@ -11,8 +11,8 @@ ansible_ssh_user: root
 #ansible_sudo_pass: password
 
 # A list of insecure registrys you night need to define
-insecure_registrys:
-  - "rdocker.example.com:5000"
+# insecure_registrys:
+#   - "gcr.io"
 
 # If you need a proxy for the docker daemon define these here
 #  The condition is if they are defined so just comment them out if you don't 
@@ -20,6 +20,10 @@ insecure_registrys:
 # http_proxy: "http://proxy.example.com:3128"
 # https_proxy: "http://proxy.example.com:3128"
 
+# This directory is where all the scripts and miscellaneous files go
+#  that Kubernetes normally puts in /srv/kubernetes.
+#  This helps for hosts that you do not have permission to create a root level dir.
+kube_server_dir: /var/srv/kubernetes
 
 # Kubernetes internal network for services.
 # Kubernetes services will get fake IP addresses from this range.

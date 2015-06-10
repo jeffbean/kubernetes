@@ -3,6 +3,7 @@ Description=Kubernetes Addon Object Manager
 Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 
 [Service]
+Environment="TOKEN_DIR={{ kube_server_dir }}"
 ExecStart=/etc/kubernetes/kube-addons.sh
 
 [Install]

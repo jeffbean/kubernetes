@@ -23,5 +23,6 @@ KUBE_ETCD_SERVERS="--etcd_servers=http://{{ groups['etcd'][0] }}:2379"
 KUBE_ADMISSION_CONTROL="--admission_control=NamespaceAutoProvision,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
 
 # Add your own!
-KUBE_API_ARGS="--tls_cert_file=/srv/kubernetes/server.cert --tls_private_key_file=/srv/kubernetes/server.key"
-#KUBE_API_ARGS=""
+# uncomment to run api-server with certs created in {{ kube_server_dir }}.
+#KUBE_API_ARGS="--tls_cert_file={{ kube_server_dir }}/server.cert --tls_private_key_file={{ kube_server_dir }}/server.key"
+KUBE_API_ARGS=""

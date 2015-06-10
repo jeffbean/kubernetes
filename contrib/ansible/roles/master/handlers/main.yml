@@ -21,5 +21,10 @@
 - name: remove certs
   file: path={{ item }} state=absent
   with_items:
-    - /srv/kubernetes/server.cert
-    - /srv/kubernetes/server.key
+    - "{{ kube_server_dir }}/server.cert"
+    - "{{ kube_server_dir }}/server.key"
+
+- name: create certs
+  shell: CERT_DIR={{ kube_server_dir }} CERT_GROUP={{ kube_cert_group }} ./make-cert.sh 
+    creates="{{ kube_server_dir }}/server.cert"
+    chdir={{ kube_server_dir }}

@@ -1,10 +1,25 @@
 ---
-- name: Assures /srv/kubernetes/ dir exists
-  file: path=/srv/kubernetes/ state=directory
+- name: Assures kubernetes server dir exists
+  file: path={{ kube_server_dir }} state=directory
 
 - name: Create system kube-cert groups
-  group: name=kube-cert state=present system=yes
+  group: name={{ kube_cert_group }} state=present system=yes
 
+- name: Get create cert script from Kubernetes
+  get_url: url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-cert.sh
+    dest="{{ kube_server_dir }}/make-cert.sh" mode=0755
+  notify:
+    - remove certs
+    - create certs
+    - restart apiserver
+
+- name: Get create ca cert script from Kubernetes
+  get_url: url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-ca-cert.sh
+    dest="{{ kube_server_dir }}/make-ca-cert.sh" mode=0755 
+
+- name: Change kubernetes {{ kube_server_dir }} directory owner to 'kube' user
+  file: path={{ kube_server_dir }} owner=kube state=directory recurse=yes
+  
 - name: write the config file for the api server
   template: src=apiserver.j2 dest=/etc/kubernetes/apiserver
   notify:
@@ -19,24 +34,6 @@
   copy: src=scheduler dest=/etc/kubernetes/scheduler
   notify:
     - restart scheduler
-
-- name: Get create cert script from Kubernetes
-  get_url:
-    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-cert.sh
-    dest=/srv/kubernetes/make-cert.sh mode=0755 owner=root group=root
-  notify:
-    - remove certs
-
-- name: Get create ca cert script from Kubernetes
-  get_url:
-    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-ca-cert.sh
-    dest=/srv/kubernetes/make-ca-cert.sh mode=0755 owner=root group=root
-
-- name: Run create cert script
-  command: /srv/kubernetes/make-cert.sh creates=/srv/kubernetes/server.cert 
-
-- name: Change /srv/kubernetes directory owner to 'kube' user
-  file: path=/srv/kubernetes owner=kube state=directory recurse=yes
 
 - name: Enable apiserver
   service: name=kube-apiserver enabled=yes state=started

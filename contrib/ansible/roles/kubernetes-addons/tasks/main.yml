@@ -3,8 +3,39 @@
   file: path=/etc/kubernetes/addons/ state=directory
   tags: addons
 
+- name: Assures local addon dir exists
+  local_action: file 
+    path={{ local_temp_addon_dir }}
+    state=directory
+  sudo: no
+  tags: addons
+
 - include: dns.yml
   when: dns_setup
+  tags: addons
+
+- name: fix for Kubernetes #9599 issue
+  file: path=/usr/local/bin/kubectl src=/usr/bin/kubectl state=link
+  tags: addons
+  
+- name: Get kube-addons script from Kubernetes
+  get_url: url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/kube-addons/kube-addons.sh
+    dest="/etc/kubernetes/kube-addons.sh" mode=0755 
+  tags: addons
+
+- name: Get kube-addon-update script from Kubernetes
+  get_url: url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/kube-addons/kube-addon-update.sh
+    dest="/etc/kubernetes/kube-addon-update.sh" mode=0755 
+  tags: addons
+   
+- name: Copy script to create known_tokens.csv 
+  copy: src=kube-gen-known-tokens.sh dest=/etc/kubernetes/kube-gen-known-tokens.sh mode=0755 owner=root group=root
+  tags: addons
+
+- name: Run kube-gen-known-tokens script to create {{ kube_server_dir }}/known_tokens.csv
+  shell: TOKEN_DIR={{ kube_server_dir }} ./kube-gen-known-tokens.sh 
+    creates="{{ kube_server_dir }}/known_tokens.csv"
+    chdir=/etc/kubernetes/
   tags: addons
 
 - name: Install kube-addons service 
@@ -13,12 +44,7 @@
     - reload and restart kube-addons
   tags: addons
 
-- name: Install kube-addons.sh script for  the service. 
-  template: src=kube-addons.sh dest=/etc/kubernetes/kube-addons.sh mode=0755
-  notify:
-    - restart kube-addons
-  tags: addons
-
 - name: Enable and start kube addons
   service: name=kube-addons.service enabled=yes state=started
   tags: addons
+

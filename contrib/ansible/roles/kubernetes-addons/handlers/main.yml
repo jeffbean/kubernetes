@@ -6,3 +6,6 @@
     
 - name: restart kube-addons
   service: name=kube-addons state=restarted 
+
+- name: update kube-addons
+  shell: TEST_KUBECTL=/usr/bin/kubectl ./kube-addon-update.sh /etc/kubernetes/addons chdir=/etc/kubernetes/

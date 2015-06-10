@@ -1,9 +1,10 @@
+
 [masters]
-kube-master-test-01
+kube-master-test-01.example.com
 
 [etcd]
-kube-master-test-01
+kube-master-test-01.example.com
 
 [minions]
-kube-minion-test-01
-kube-minion-test-02
+kube-minion-test-01.example.com
+kube-minion-test-02.example.com
