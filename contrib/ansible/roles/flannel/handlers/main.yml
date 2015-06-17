@@ -2,9 +2,9 @@
 - name: restart flannel
   service: name=flanneld state=restarted
   notify:
-          - stop docker
-          - delete docker0
-          - start docker
+    - stop docker
+    - delete docker0
+    - start docker
 
 - name: stop docker
   service: name=docker state=stopped
