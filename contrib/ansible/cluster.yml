@@ -37,6 +37,7 @@
         - kubernetes-addons
   tags:
         - addons
+        - dns
 
 # install kubernetes on the nodes
 - hosts: nodes
