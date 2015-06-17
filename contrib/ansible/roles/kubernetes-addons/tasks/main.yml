@@ -27,6 +27,14 @@
   notify:
     - reload and restart kube-addons
 
+- name: HACK | copy local kube-addons.sh
+  copy: src=kube-addons.sh dest={{ kube_script_dir }}/kube-addons.sh mode=0755
+  changed_when: false
+
+- name: HACK | copy local kube-addon-update.sh
+  copy: src=kube-addon-update.sh dest={{ kube_script_dir }}/kube-addon-update.sh mode=0755
+  changed_when: false
+
 - name: Copy script to create known_tokens.csv
   copy: src=kube-gen-known-tokens.sh dest={{ kube_script_dir }}/kube-gen-known-tokens.sh mode=0755
 

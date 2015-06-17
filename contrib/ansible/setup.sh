@@ -18,5 +18,7 @@ inventory=${INVENTORY:-inventory}
 
 cp ../../cluster/saltbase/salt/generate-cert/make-ca-cert.sh roles/kubernetes/files/
 cp ../../cluster/saltbase/salt/generate-cert/make-cert.sh roles/kubernetes/files/
+cp ../../cluster/saltbase/salt/kube-addons/kube-addon-update.sh roles/kubernetes-addons/files/
+cp ../../cluster/saltbase/salt/kube-addons/kube-addons.sh roles/kubernetes-addons/files/
 
 ansible-playbook -i ${inventory} cluster.yml $@
