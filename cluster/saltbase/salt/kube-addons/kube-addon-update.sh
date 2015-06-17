@@ -44,7 +44,9 @@
 
 
 # global config
-KUBECTL=${TEST_KUBECTL:-/usr/local/bin/kubectl}   # substitute for tests
+KUBECTL=${TEST_KUBECTL:-}   # substitute for tests
+KUBECTL=${KUBECTL:-${KUBECTL_BIN:-}}
+KUBECTL=${KUBECTL:-/usr/local/bin/kubectl}
 NUM_TRIES_FOR_CREATE=${TEST_NUM_TRIES:-100}
 DELAY_AFTER_CREATE_ERROR_SEC=${TEST_DELAY_AFTER_ERROR_SEC:=10}
 NUM_TRIES_FOR_STOP=${TEST_NUM_TRIES:-100}
