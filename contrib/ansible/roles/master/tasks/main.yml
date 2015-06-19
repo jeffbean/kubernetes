@@ -23,6 +23,29 @@
 - name: add cap_net_bind_service to kube-apiserver
   capabilities: path=/usr/bin/kube-apiserver capability=cap_net_bind_service=ep state=present
 
+- name: Create system kube-cert groups
+  group: name={{ kube_cert_group }} state=present system=yes
+
+- name: Create kubernetes script directory
+  file: path={{ kube_script_dir }} state=directory
+
+- name: Create kubernetes config directory
+  file: path={{ kube_config_dir }} state=directory
+
+- name: Copy certificates to master
+  copy:
+    src={{ item }}
+    dest={{ kube_config_dir }}
+    group={{ kube_cert_group }}
+  with_items:
+    - "{{ _local_cert_dir }}/ca.crt"
+    - "{{ _local_cert_dir }}/server.cert"
+    - "{{ _local_cert_dir }}/server.key"
+    - "{{ _local_cert_dir }}/kubecfg.crt"
+    - "{{ _local_cert_dir }}/kubecfg.key"
+  tags:
+    certs
+
 - name: Enable apiserver
   service: name=kube-apiserver enabled=yes state=started
 

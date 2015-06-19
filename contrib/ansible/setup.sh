@@ -15,4 +15,8 @@
 # limitations under the License.
 
 inventory=${INVENTORY:-inventory}
+
+cp ../../cluster/saltbase/salt/generate-cert/make-ca-cert.sh roles/kubernetes/files/
+cp ../../cluster/saltbase/salt/generate-cert/make-cert.sh roles/kubernetes/files/
+
 ansible-playbook -i ${inventory} cluster.yml $@

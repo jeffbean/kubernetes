@@ -15,6 +15,17 @@
   notify:
     - restart proxy
 
+- name: Copy certificates to node
+  copy:
+    src={{ item }}
+    dest={{ kube_config_dir }}
+  with_items:
+    - "{{ _local_cert_dir }}/ca.crt"
+    - "{{ _local_cert_dir }}/kubecfg.crt"
+    - "{{ _local_cert_dir }}/kubecfg.key"
+  tags:
+    certs
+
 - name: Enable kubelet
   service: name=kubelet enabled=yes state=started
 

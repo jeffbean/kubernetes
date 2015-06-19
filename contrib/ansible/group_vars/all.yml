@@ -2,6 +2,11 @@
 # for dns purposes and cluster id purposes in the future.
 cluster_name: kube.local
 
+# Pathname to store kubernetes certificates and config files
+# Certificates for your entire cluster will be generated and stored
+# in this location. If unset will default to /home/user/kube-certs-default
+#local_kube_cert_dir: /home/user/kube-certs/
+
 # Account name of remote user. Ansible will use this user account to ssh into
 # the managed machines. The user must be able to use sudo without asking
 # for password unless ansible_sudo_pass is set
