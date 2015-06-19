@@ -6,25 +6,41 @@
   when: not is_atomic and ansible_distribution == "CentOS"
 
 - name: write the config files for kubelet
-  template: src=kubelet.j2 dest=/etc/kubernetes/kubelet
+  template: src=kubelet.j2 dest={{ kube_config_dir }}/kubelet
   notify:
     - restart kubelet
 
 - name: write the config files for proxy
-  copy: src=proxy dest=/etc/kubernetes/proxy
+  template: src=proxy.j2 dest={{ kube_config_dir }}/proxy
   notify:
     - restart proxy
+
+- name: Create kubernetes certs directory
+  file: path={{ kube_config_dir }}/certs state=directory mode=0750
+  tags:
+    certs
 
 - name: Copy certificates to node
   copy:
     src={{ item }}
-    dest={{ kube_config_dir }}
+    dest={{ kube_config_dir }}/certs/
+    mode=0440
   with_items:
     - "{{ _local_cert_dir }}/ca.crt"
     - "{{ _local_cert_dir }}/kubecfg.crt"
     - "{{ _local_cert_dir }}/kubecfg.key"
   tags:
     certs
+
+- name: write the kubecfg (auth) file for kubelet
+  template: src=kubelet.kubeconfig.j2 dest={{ kube_config_dir }}/kubelet.kubeconfig
+  notify:
+    - restart kubelet
+
+- name: write the kubecfg (auth) file for kube-proxy
+  template: src=proxy.kubeconfig.j2 dest={{ kube_config_dir }}/proxy.kubeconfig
+  notify:
+    - restart proxy
 
 - name: Enable kubelet
   service: name=kubelet enabled=yes state=started
