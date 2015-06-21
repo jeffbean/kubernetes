@@ -40,7 +40,7 @@ if [ "$cert_ip" == "_use_azure_dns_name_" ]; then
   use_cn=true
 fi
 
-tmpdir=$(mktemp -d --tmpdir kubernetes_cacert.XXXXXX)
+tmpdir=$(mktemp -d -t kubernetes_cacert.XXXXXX)
 trap 'rm -rf "${tmpdir}"' EXIT
 cd "${tmpdir}"
 
