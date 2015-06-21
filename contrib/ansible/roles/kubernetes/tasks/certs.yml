@@ -6,7 +6,6 @@
   file:
     path={{ kube_cert_dir }}
     state=directory
-    owner=kube
 
 - name: Get create cert script from Kubernetes
   get_url:
@@ -41,19 +40,6 @@
   environment:
     CERT_DIR: "{{ kube_cert_dir }}"
     CERT_GROUP: "{{ kube_cert_group }}"
-
-- name: Change certificates permissions
-  file:
-    path={{ item }}
-    group={{ kube_cert_group }}
-    owner=kube
-    mode=0440
-  with_items:
-    - "{{ kube_cert_dir }}/ca.crt"
-    - "{{ kube_cert_dir }}/server.cert"
-    - "{{ kube_cert_dir }}/server.key"
-    - "{{ kube_cert_dir }}/kubecfg.crt"
-    - "{{ kube_cert_dir }}/kubecfg.key"
 
 - name: Fetch certificates from master server
   fetch:

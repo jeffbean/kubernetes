@@ -5,6 +5,19 @@
 - include: centos.yml
   when: not is_atomic and ansible_distribution == "CentOS"
 
+- name: Change certificates permissions
+  file:
+    path={{ item }}
+    group={{ kube_cert_group }}
+    owner=kube
+    mode=0440
+  with_items:
+    - "{{ kube_cert_dir }}/ca.crt"
+    - "{{ kube_cert_dir }}/server.cert"
+    - "{{ kube_cert_dir }}/server.key"
+    - "{{ kube_cert_dir }}/kubecfg.crt"
+    - "{{ kube_cert_dir }}/kubecfg.key"
+
 - name: write the config file for the api server
   template: src=apiserver.j2 dest={{ kube_config_dir }}/apiserver
   notify:
@@ -31,6 +44,9 @@
 
 - name: Create kubernetes config directory
   file: path={{ kube_config_dir }} state=directory
+
+- name: Verify certificate directory exits
+  file: path={{ kube_cert_dir }} state=directory owner=kube
 
 - name: write the kubecfg (auth) file for controller-manager
   template: src=controller-manager.kubeconfig.j2 dest={{ kube_config_dir }}/controller-manager.kubeconfig
