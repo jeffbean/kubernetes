@@ -5,6 +5,7 @@
     - stop docker
     - delete docker0
     - start docker
+  when: inventory_hostname in groups['nodes']
 
 - name: stop docker
   service: name=docker state=stopped

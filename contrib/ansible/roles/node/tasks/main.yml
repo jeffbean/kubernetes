@@ -15,22 +15,13 @@
   notify:
     - restart proxy
 
-- name: Create kubernetes certs directory
-  file: path={{ kube_config_dir }}/certs state=directory mode=0750
-  tags:
-    certs
 
-- name: Copy certificates to node
+- name: Copy certificates to nodes
   copy:
-    src={{ item }}
-    dest={{ kube_config_dir }}/certs/
+    src="special/certs/"
+    dest={{ kube_cert_dir }}
     mode=0440
-  with_items:
-    - "{{ _local_cert_dir }}/ca.crt"
-    - "{{ _local_cert_dir }}/kubecfg.crt"
-    - "{{ _local_cert_dir }}/kubecfg.key"
-  tags:
-    certs
+    #group={{ kube_cert_group }}
 
 - name: write the kubecfg (auth) file for kubelet
   template: src=kubelet.kubeconfig.j2 dest={{ kube_config_dir }}/kubelet.kubeconfig

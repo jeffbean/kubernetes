@@ -1,72 +1,67 @@
 ---
-- name: Get local homedir (for default storage)
-  local_action: command echo ${HOME}
-  register: home
-  run_once: true
-  sudo: false
+- name: Create system kube-cert groups
+  group: name={{ kube_cert_group }} state=present system=yes
 
-- name: Set local homedir fact (for default storage)
-  local_action: set_fact
-    _local_home={{ lookup('env','HOME') }}
-  run_once: true
-  sudo: false
-
-- name: Set a fact for the local cert directory
-  local_action: set_fact
-          _local_cert_dir="{{ local_kube_cert_dir|default('{{ _local_home }}/kube-certs') }}"
-  run_once: true
-  sudo: false
-
-- name: make sure the local certificate directory exits
-  local_action: file
-    path={{ _local_cert_dir }}
+- name: make sure the certificate directory exits
+  file:
+    path={{ kube_cert_dir }}
     state=directory
-    mode=o-rwx
-  run_once: true
-  sudo: false
+    owner=kube
 
 - name: Get create cert script from Kubernetes
-  local_action: get_url
+  get_url:
     url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-cert.sh
-    dest={{ _local_cert_dir }}/make-cert.sh mode=0755
+    dest={{ kube_cert_dir }}/make-cert.sh mode=0755
     force=yes
-  run_once: true
-  sudo: false
 
 - name: Get create ca cert script from Kubernetes
-  local_action: get_url
+  get_url:
     url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-ca-cert.sh
-    dest={{ _local_cert_dir }}/make-ca-cert.sh mode=0755
+    dest={{ kube_cert_dir }}/make-ca-cert.sh mode=0755
     force=yes
-  run_once: true
-  sudo: false
 
 - name: HACK | overwrite make-cert.sh from local copy
-  local_action: copy
+  copy:
     src=make-cert.sh
-    dest={{ _local_cert_dir }}
+    dest={{ kube_cert_dir }}
     mode=0755
-  run_once: true
-  sudo: false
-  changed_when: false
 
 - name: HACK | overwrite make-ca-cert.sh from local copy
-  local_action: copy
+  copy:
     src=make-ca-cert.sh
-    dest={{ _local_cert_dir }}
+    dest={{ kube_cert_dir }}
     mode=0755
-  run_once: true
-  sudo: false
-  changed_when: false
 
 # FIXME This only generates a cert for one master...
-- name: Run create cert script
-  local_action: command
-    "{{ _local_cert_dir }}/make-ca-cert.sh" {{ ansible_default_ipv4.address }}
+- name: Run create cert script on master
+  command:
+    "{{ kube_cert_dir }}/make-ca-cert.sh {{ inventory_hostname }}"
   args:
-    creates: "{{ _local_cert_dir }}/server.cert"
+    creates: "{{ kube_cert_dir }}/server.cert"
   environment:
-    CERT_DIR: "{{ _local_cert_dir }}"
-    CERT_GROUP: "eparis"
-  sudo: false
-  when: inventory_hostname in groups['masters']
+    CERT_DIR: "{{ kube_cert_dir }}"
+    CERT_GROUP: "{{ kube_cert_group }}"
+
+- name: Change certificates permissions
+  file:
+    path={{ item }}
+    group={{ kube_cert_group }}
+    owner=kube
+    mode=0440
+  with_items:
+    - "{{ kube_cert_dir }}/ca.crt"
+    - "{{ kube_cert_dir }}/server.cert"
+    - "{{ kube_cert_dir }}/server.key"
+    - "{{ kube_cert_dir }}/kubecfg.crt"
+    - "{{ kube_cert_dir }}/kubecfg.key"
+
+- name: Fetch certificates from master server
+  fetch:
+    src={{ kube_cert_dir }}/{{ item }}
+    dest="special/certs/{{ item }}"
+    flat=yes
+    fail_on_missing=yes
+  with_items:
+    - "ca.crt"
+    - "kubecfg.crt"
+    - "kubecfg.key"

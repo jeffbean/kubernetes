@@ -2,11 +2,23 @@
 - include: fedora.yml
   when: ansible_distribution == "Fedora"
 
+
+# will need on all nodes and master machines
+- name: make sure the certificate directory exits
+  file:
+    path={{ kube_cert_dir }}
+    state=directory
+    mode=o-rwx
+
+- name: Create kubernetes config directory
+  file: path={{ kube_config_dir }} state=directory
+
 - name: write the global config file
   template: src=config.j2 dest=/etc/kubernetes/config
   notify:
     - restart daemons
 
 - include: certs.yml
+  when: inventory_hostname in groups['masters']
   tags:
     certs

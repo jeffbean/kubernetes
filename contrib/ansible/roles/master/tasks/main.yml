@@ -32,27 +32,6 @@
 - name: Create kubernetes config directory
   file: path={{ kube_config_dir }} state=directory
 
-- name: Create kubernetes certs directory
-  file: path={{ kube_config_dir }}/certs state=directory mode=0550 owner=kube
-  tags:
-    certs
-
-- name: Copy certificates to master
-  copy:
-    src={{ item }}
-    dest={{ kube_config_dir }}/certs/
-    group={{ kube_cert_group }}
-    owner=kube
-    mode=0440
-  with_items:
-    - "{{ _local_cert_dir }}/ca.crt"
-    - "{{ _local_cert_dir }}/server.cert"
-    - "{{ _local_cert_dir }}/server.key"
-    - "{{ _local_cert_dir }}/kubecfg.crt"
-    - "{{ _local_cert_dir }}/kubecfg.key"
-  tags:
-    certs
-
 - name: write the kubecfg (auth) file for controller-manager
   template: src=controller-manager.kubeconfig.j2 dest={{ kube_config_dir }}/controller-manager.kubeconfig
   notify:
