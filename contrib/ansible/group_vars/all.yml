@@ -20,8 +20,8 @@ insecure_registrys:
 #  - "gcr.io"
 
 # If you need a proxy for the docker daemon define these here
-#http_proxy: "http://proxy.example.com:3128"
-#https_proxy: "http://proxy.example.com:3128"
+http_proxy: "http://rproxy.mcp.com:3128"
+https_proxy: "http://rproxy.mcp.com:3128"
 
 # Kubernetes internal network for services.
 # Kubernetes services will get fake IP addresses from this range.

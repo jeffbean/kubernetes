@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  config.vm.box = "chef/centos-7.0"
+
+  (1..2).each do |i|
+    config.vm.define "centos-node-#{i}" do |node|
+      node.vm.hostname = "centos-node-#{i}.vms.local"
+      node.vm.network "private_network", ip: "192.168.1.1#{i}"
+    end
+  end
+  config.vm.define "centos-master", primary: true do |master|
+    master.vm.hostname = "centos-master.vms.local"
+    master.vm.network "private_network", ip: "192.168.1.100"
+    master.vm.provision :ansible do |ansible|
+      ansible.host_key_checking = false
+      ansible.extra_vars = {
+        ansible_ssh_user: 'vagrant',
+        ansible_ssh_pass: 'vagrant',
+        user: 'vagrant'
+      }
+      #ansible.verbose = 'vvv'
+      ansible.playbook = "../../cluster.yml"
+      ansible.inventory_path = "vinventory"
+
+      ansible.limit = 'all'
+    end
+  end
+
+
+
+  config.vm.provider "virtualbox" do |vb|
+    # Display the VirtualBox GUI when booting the machine
+    vb.gui = false
+    # Customize the amount of memory on the VM:
+    vb.memory = "2048"
+  end
+end

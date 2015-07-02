@@ -1,4 +1,6 @@
 ---
+- copy: src=env dest=/etc/environment
+
 - name: Determine if Atomic
   stat: path=/run/ostree-booted
   register: s

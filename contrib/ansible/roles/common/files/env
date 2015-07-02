@@ -1,0 +1,2 @@
+http_proxy="http://rproxy.mcp.com:3128"
+https_proxy="http://rproxy.mcp.com:3128"
