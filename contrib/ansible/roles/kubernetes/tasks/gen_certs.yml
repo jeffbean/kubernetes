@@ -4,6 +4,11 @@
 #    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/generate-cert/make-ca-cert.sh
 #    dest={{ kube_script_dir }}/make-ca-cert.sh mode=0500
 #    force=yes
+- name: Install openssl for easy-rsa stuff
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+    name: openssl
+    state: latest
 
 - name: HACK | overwrite make-ca-cert.sh from local copy
   copy:
