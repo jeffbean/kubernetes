@@ -1,0 +1,38 @@
+---
+- name: Install nginx
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+    name: nginx
+    state: latest
+  notify:
+    - restart nginx
+- name: Install passlib for htpasswd creation
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+    name: python-passlib
+    state: latest
+
+- name: Install nginx config
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf mode=0644 owner=root group=root
+  notify:
+    - restart nginx
+
+- name: Create sites-enabled directory
+  file: path=/etc/nginx/sites-enabled/ state=directory
+
+- name: Install nginx default site
+  template: src=kubernetes-site.j2 dest=/etc/nginx/sites-enabled/default mode=0644 owner=root group=root
+  notify:
+    - restart nginx
+
+- name: Add user to nginx htpasswd file
+  htpasswd:
+    path={{ htpasswd_file }}
+    name={{ web_username|default('kube') }}
+    password={{ web_password|default('password') }}
+    owner=root
+    group=root
+    mode=0644
+
+- name: Start and enable nginx service on host
+  service: name=nginx state=started enabled=yes

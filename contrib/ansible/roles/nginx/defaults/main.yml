@@ -1,0 +1,6 @@
+---
+# The default path for the nginx service
+htpasswd_file: /usr/share/nginx/htpasswd
+
+# server port to listen on the host
+kube_webserver_port: 6443
