@@ -32,6 +32,7 @@
   roles:
     - master
     - nginx
+    - logrotate
   tags:
     - masters
 
@@ -49,5 +50,6 @@
   sudo: yes
   roles:
     - node
+    - logrotate
   tags:
     - nodes

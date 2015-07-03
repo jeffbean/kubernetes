@@ -1,0 +1,21 @@
+---
+- name: Install logrotate
+  action: "{{ ansible_pkg_mgr }}"
+  args:
+    name: logrotate
+    state: latest
+
+- name: Install logrotate config for services
+  template: src=logrotate_conf.j2 dest=/etc/logrotate.d/{{ item }} mode=0644 owner=root group=root
+  with_items:
+    - messages
+
+- name: Install docker container logrotate config
+  template: src=docker-containers.j2 dest=/etc/logrotate.d/docker-containers mode=0644 owner=root group=root
+
+# Creates a cron file under /etc/cron.d
+- name: Install hourly cron for logrotate
+  cron:
+    name="Logrotate" special_time=hourly
+    user="root" job="logrotate /etc/logrotate.conf"
+    cron_file=ansible_logrotate

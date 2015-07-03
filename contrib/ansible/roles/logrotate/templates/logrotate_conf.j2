@@ -1,0 +1,10 @@
+/var/log/{{ item }} {
+    rotate 10
+    copytruncate
+    missingok
+    notifempty
+    compress
+    maxsize 100M
+    daily
+    create 0644 root root
+}
