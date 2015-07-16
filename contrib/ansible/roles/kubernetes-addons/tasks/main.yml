@@ -13,7 +13,7 @@
 
 - name: Make sure the system services namespace exists
   get_url:
-    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/saltbase/salt/kube-addons/namespace.yaml
+    url={{ kube_system_namespace_url }}
     dest="{{ kube_config_dir }}/addons/"
     force=yes
 
@@ -25,6 +25,8 @@
 
 - include: cluster-logging.yml
   when: cluster_logging
+
+- include: ui.yml
 
 #- name: Get kube-addons script from Kubernetes
 #  get_url:

@@ -4,7 +4,7 @@
 
 - name: MONITORING | Download monitoring files from Kubernetes repo
   get_url:
-    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/addons/cluster-monitoring/influxdb/{{ item }}
+    url={{ kube_monitoring_addon_url }}/{{ item }}
     dest="{{ kube_addons_dir }}/cluster-monitoring/"
     force=yes
   with_items:

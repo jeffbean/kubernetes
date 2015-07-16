@@ -1,0 +1,12 @@
+---
+- name: UI | Assures {{ kube_addons_dir }}/kube-ui dir exists
+  file: path={{ kube_addons_dir }}/kube-ui state=directory
+
+- name: UI | Download logging files from Kubernetes repo
+  get_url:
+    url={{ kube_ui_addon_url }}/{{ item }}
+    dest="{{ kube_addons_dir }}/kube-ui/"
+    force=yes
+  with_items:
+    - kube-ui-rc.yaml
+    - kube-ui-svc.yaml

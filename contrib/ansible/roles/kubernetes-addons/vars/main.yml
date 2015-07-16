@@ -1,0 +1,17 @@
+# the branch name that is then used for all the URLS needed to download
+# The subsiquent URLS might change based on branch.
+kube_branch: "release-1.0"
+
+# misc
+kube_system_namespace_url: "https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/{{ kube_branch }}/cluster/saltbase/salt/kube-addons/namespace.yaml"
+
+# DNS addon
+kube_dns_rc_url: "https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/{{ kube_branch }}/cluster/addons/dns/skydns-rc.yaml.in"
+kube_dns_svc_url: "https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/{{ kube_branch }}/cluster/addons/dns/skydns-svc.yaml.in"
+
+# cluster monitoring addon
+kube_monitoring_addon_url: "https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/{{ kube_branch }}/cluster/addons/cluster-monitoring/influxdb"
+kube_logging_addon_url: "https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/{{ kube_branch }}/cluster/addons/fluentd-elasticsearch"
+
+# UI addon
+kube_ui_addon_url: "https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/{{ kube_branch }}/cluster/addons/kube-ui"

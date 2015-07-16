@@ -4,7 +4,7 @@
 
 - name: LOGGING | Download logging files from Kubernetes repo
   get_url:
-    url=https://raw.githubusercontent.com/GoogleCloudPlatform/kubernetes/master/cluster/addons/fluentd-elasticsearch/{{ item }}
+    url={{ kube_logging_addon_url }}/{{ item }}
     dest="{{ kube_addons_dir }}/cluster-logging/"
     force=yes
   with_items:
