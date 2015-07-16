@@ -10,6 +10,11 @@
   notify:
     - restart apiserver
 
+- name: Create basic authentication configuration for kube-apiserver
+  template: src=basic_auth.csv.j2 dest={{ kube_config_dir }}/basic_auth.csv
+  notify:
+    - restart apiserver
+
 - name: Ensure that a token auth file exists (addons may populate it)
   file: path={{ kube_token_dir }}/known_tokens.csv state=touch
   changed_when: false
